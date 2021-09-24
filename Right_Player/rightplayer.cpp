@@ -9,6 +9,7 @@ RightPlayer::RightPlayer(QWidget *parent)
 
     r_player = new QMediaPlayer();
     r_playlist = new QMediaPlaylist();
+    r_playlist->setPlaybackMode(QMediaPlaylist :: Loop);
     r_player->setPlaylist(r_playlist);
 
     ui->volumesong->setRange(0, 100);
@@ -16,13 +17,13 @@ RightPlayer::RightPlayer(QWidget *parent)
     r_player->setVolume(50);
 
     connect (ui->openfile, &QPushButton::clicked, this, &RightPlayer::browsefile);
-    connect(ui->playlisttable, &QListWidget::doubleClicked,this, &RightPlayer::songselected);
     connect (ui->stop_play, &QPushButton::clicked, this, &RightPlayer::playsong);
     connect (ui->volumesong, &QSlider::valueChanged, r_player, &QMediaPlayer::setVolume);
     connect(r_player, &QMediaPlayer::currentMediaChanged, this, &RightPlayer::curschange);
     connect(r_player, &QMediaPlayer::stateChanged, this, &RightPlayer::statechange);
     connect(r_player, &QMediaPlayer::positionChanged, this, &RightPlayer::positionchange);
     connect(r_player, &QMediaPlayer::durationChanged, this, &RightPlayer::durationchange);
+    connect(r_playlist, &QMediaPlaylist::currentIndexChanged, this, &RightPlayer::playlistchange);
 
     ui->playlisttable->clear();
 
@@ -35,15 +36,21 @@ RightPlayer::~RightPlayer()
 
 void RightPlayer::browsefile()
 {
-    QString r_fileway = QFileDialog::getOpenFileName(this, "Open folder", QDir::homePath(), "MP3 *.mp3");
-    ui->playlisttable->addItem(r_fileway);
-}
-void RightPlayer::songselected()
-{
-    QString name_song = ui->playlisttable->currentItem()->text();
-    ui->songname->setText(name_song);
-    r_player->setMedia(QUrl::fromLocalFile(r_fileway + QDir::separator()+name_song));
+    QStringList r_fileway = QFileDialog::getOpenFileNames(this,"Open folder", QDir::homePath());
+    if (r_fileway.count()<1)
+        return;
 
+    for (int i=0; i<r_fileway.count();i++){
+        QString pathfile=r_fileway.at(i);
+        r_playlist->addMedia(QUrl::fromLocalFile(pathfile));
+        QFileInfo fileInfo(pathfile);
+        ui->playlisttable->addItem(fileInfo.fileName());
+    }
+
+    if (r_player->state() != QMediaPlayer::PlayingState){
+        r_playlist->setCurrentIndex(0);
+    }
+    r_player->play();
 }
 
 void RightPlayer::playsong()
@@ -53,17 +60,6 @@ void RightPlayer::playsong()
         ui->stop_play->setText(">");
     }else{
         r_player->play();
-    }
-}
-
-void RightPlayer::on_mute_clicked()
-{
-    if(ui->mute->text() == "Mute"){
-        r_player->setMuted(true);
-        ui->mute->setText("Unmute");
-    }else{
-        r_player->setMuted(false);
-        ui->mute->setText("Mute");
     }
 }
 
@@ -81,6 +77,38 @@ void RightPlayer::statechange(int state)
     }
 }
 
+void RightPlayer::playlistchange(int position)
+{
+    ui->playlisttable->setCurrentRow(position);
+}
+
+void RightPlayer::on_playlisttable_doubleClicked(const QModelIndex &index)
+{
+    int clickedrow=index.row();
+    r_playlist->setCurrentIndex(clickedrow);
+    r_player->play();
+}
+
+void RightPlayer::on_nextsong_clicked()
+{
+    r_playlist->next();
+}
+
+void RightPlayer::on_previous_clicked()
+{
+    r_playlist->previous();
+}
+
+void RightPlayer::on_mute_clicked()
+{
+    if(ui->mute->text() == "Mute"){
+        r_player->setMuted(true);
+        ui->mute->setText("Unmute");
+    }else{
+        r_player->setMuted(false);
+        ui->mute->setText("Mute");
+    }
+}
 
 void RightPlayer::on_slidertime_sliderMoved(int position)
 {
@@ -101,3 +129,39 @@ void RightPlayer::positionchange(qint64 position)
 
     ui->timesong->setText(time.toString("mm:ss") + "/" + fulltime.toString("mm:ss"));
 }
+
+void RightPlayer::on_deletesong_clicked()
+{
+    int songposition=ui->playlisttable->currentRow();
+    QListWidgetItem *item=ui->playlisttable->takeItem(songposition);
+    delete item;
+
+    if (r_playlist->currentIndex() == songposition){
+        int nextPos=0;
+        if (songposition >= 1)
+            nextPos = songposition - 1;
+
+        r_playlist->removeMedia(songposition);
+
+        if (ui->playlisttable->count()>0){
+            r_playlist->setCurrentIndex(nextPos);
+            playlistchange(nextPos);
+        }else{
+            r_player->stop();
+        }
+    }else{
+        r_playlist->removeMedia(songposition);
+    }
+
+}
+
+void RightPlayer::on_clearplaylist_clicked()
+{
+    r_playlist->clear();
+    ui->playlisttable->clear();
+    r_player->stop();
+
+}
+
+
+

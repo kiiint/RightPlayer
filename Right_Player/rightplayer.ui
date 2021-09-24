@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
+    <width>403</width>
     <height>388</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>Song Name</string>
+     <string>Song name</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -148,6 +148,32 @@
       <width>331</width>
       <height>221</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deletesong">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>10</y>
+      <width>131</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clearplaylist">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>10</y>
+      <width>131</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clear</string>
     </property>
    </widget>
   </widget>

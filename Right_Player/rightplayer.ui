@@ -140,19 +140,6 @@
      <string>Mute</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="openplaylist">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>10</y>
-      <width>131</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Browse playlist</string>
-    </property>
-   </widget>
    <widget class="QListWidget" name="playlisttable">
     <property name="geometry">
      <rect>

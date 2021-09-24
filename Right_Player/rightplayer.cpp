@@ -21,6 +21,8 @@ RightPlayer::RightPlayer(QWidget *parent)
     connect (ui->volumesong, &QSlider::valueChanged, r_player, &QMediaPlayer::setVolume);
     connect(r_player, &QMediaPlayer::currentMediaChanged, this, &RightPlayer::curschange);
     connect(r_player, &QMediaPlayer::stateChanged, this, &RightPlayer::statechange);
+    connect(r_player, &QMediaPlayer::positionChanged, this, &RightPlayer::positionchange);
+    connect(r_player, &QMediaPlayer::durationChanged, this, &RightPlayer::durationchange);
 
     ui->playlisttable->clear();
 
@@ -46,10 +48,12 @@ void RightPlayer::songselected()
 
 void RightPlayer::playsong()
 {
-    if (r_player->state() == QMediaPlayer::PlayingState)
-            r_player->pause();
-        else
-            r_player->play();
+    if (r_player->state() == QMediaPlayer::PlayingState){
+        r_player->pause();
+        ui->stop_play->setText(">");
+    }else{
+        r_player->play();
+    }
 }
 
 void RightPlayer::on_mute_clicked()
@@ -72,11 +76,28 @@ void RightPlayer::curschange(QMediaContent media)
 void RightPlayer::statechange(int state)
 {
     switch(state) {
-    case QMediaPlayer::StoppedState: ui->stop_play->setText(">"); break;
-    case QMediaPlayer::PlayingState: ui->stop_play->setText("||"); break;
+        case QMediaPlayer::StoppedState: ui->stop_play->setText(">"); break;
+        case QMediaPlayer::PlayingState: ui->stop_play->setText("||"); break;
     }
 }
 
 
+void RightPlayer::on_slidertime_sliderMoved(int position)
+{
+    r_player->setPosition(position);
+}
 
+void RightPlayer::durationchange(qint64 position)
+{
+    ui->slidertime->setMaximum(position);
+}
 
+void RightPlayer::positionchange(qint64 position)
+{
+    int fullsong = r_player->duration();
+    ui->slidertime->setValue(position);
+    QTime time = QTime::fromMSecsSinceStartOfDay(position);
+    QTime fulltime = QTime::fromMSecsSinceStartOfDay(fullsong);
+
+    ui->timesong->setText(time.toString("mm:ss") + "/" + fulltime.toString("mm:ss"));
+}

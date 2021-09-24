@@ -7,6 +7,7 @@
 #include <QMediaPlaylist>
 #include <QFileDialog>
 #include <QDir>
+#include <QTime>
 QT_BEGIN_NAMESPACE
 namespace Ui { class RightPlayer; }
 QT_END_NAMESPACE
@@ -27,6 +28,9 @@ private slots:
     void on_mute_clicked();
     void curschange(QMediaContent media);
     void statechange(int state);
+    void on_slidertime_sliderMoved(int position);
+    void durationchange(qint64 position);
+    void positionchange(qint64 position);
 
 private:
     Ui::RightPlayer *ui;

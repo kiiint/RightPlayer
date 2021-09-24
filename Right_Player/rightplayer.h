@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <QMediaPlayer>
+#include <QMediaContent>
+#include <QMediaPlaylist>
+#include <QFileDialog>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class RightPlayer; }
@@ -16,8 +20,17 @@ public:
     RightPlayer(QWidget *parent = nullptr);
     ~RightPlayer();
 
+private slots:
+
+    void songselected();
+    void browsefile();
+
+
 private:
     Ui::RightPlayer *ui;
+    QMediaPlayer *r_player;
+    QMediaPlaylist *r_playlist;
+    QString *r_fileway;
 };
 
 #endif // RIGHTPLAYER_H

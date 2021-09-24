@@ -52,6 +52,17 @@ void RightPlayer::playsong()
             r_player->play();
 }
 
+void RightPlayer::on_mute_clicked()
+{
+    if(ui->mute->text() == "Mute"){
+        r_player->setMuted(true);
+        ui->mute->setText("Unmute");
+    }else{
+        r_player->setMuted(false);
+        ui->mute->setText("Mute");
+    }
+}
+
 void RightPlayer::curschange(QMediaContent media)
 {
     QString songway = media.canonicalUrl().toString();

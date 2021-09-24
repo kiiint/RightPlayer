@@ -24,6 +24,7 @@ private slots:
     void songselected();
     void playsong();
     void browsefile();
+    void on_mute_clicked();
     void curschange(QMediaContent media);
     void statechange(int state);
 

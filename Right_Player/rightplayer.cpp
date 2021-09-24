@@ -11,10 +11,16 @@ RightPlayer::RightPlayer(QWidget *parent)
     r_playlist = new QMediaPlaylist();
     r_player->setPlaylist(r_playlist);
 
+    ui->volumesong->setRange(0, 100);
+    ui->volumesong->setValue(50);
+    r_player->setVolume(50);
+
     connect (ui->openfile, &QPushButton::clicked, this, &RightPlayer::browsefile);
     connect(ui->playlisttable, &QListWidget::doubleClicked,this, &RightPlayer::songselected);
     connect (ui->stop_play, &QPushButton::clicked, this, &RightPlayer::playsong);
+    connect (ui->volumesong, &QSlider::valueChanged, r_player, &QMediaPlayer::setVolume);
     connect(r_player, &QMediaPlayer::currentMediaChanged, this, &RightPlayer::curschange);
+    connect(r_player, &QMediaPlayer::stateChanged, this, &RightPlayer::statechange);
 
     ui->playlisttable->clear();
 
@@ -59,6 +65,7 @@ void RightPlayer::statechange(int state)
     case QMediaPlayer::PlayingState: ui->stop_play->setText("||"); break;
     }
 }
+
 
 
 

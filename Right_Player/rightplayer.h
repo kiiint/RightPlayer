@@ -7,7 +7,6 @@
 #include <QMediaPlaylist>
 #include <QFileDialog>
 #include <QDir>
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class RightPlayer; }
 QT_END_NAMESPACE

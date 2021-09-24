@@ -13,6 +13,10 @@ RightPlayer::RightPlayer(QWidget *parent)
 
     connect (ui->openfile, &QPushButton::clicked, this, &RightPlayer::browsefile);
     connect(ui->playlisttable, &QListWidget::doubleClicked,this, &RightPlayer::songselected);
+    connect (ui->stop_play, &QPushButton::clicked, this, &RightPlayer::playsong);
+    connect(r_player, &QMediaPlayer::currentMediaChanged, this, &RightPlayer::curschange);
+
+    ui->playlisttable->clear();
 
 }
 
@@ -34,7 +38,27 @@ void RightPlayer::songselected()
 
 }
 
+void RightPlayer::playsong()
+{
+    if (r_player->state() == QMediaPlayer::PlayingState)
+            r_player->pause();
+        else
+            r_player->play();
+}
 
+void RightPlayer::curschange(QMediaContent media)
+{
+    QString songway = media.canonicalUrl().toString();
+    ui->songname->setText(songway.remove(0, songway.lastIndexOf("/") + 1));
+}
+
+void RightPlayer::statechange(int state)
+{
+    switch(state) {
+    case QMediaPlayer::StoppedState: ui->stop_play->setText(">"); break;
+    case QMediaPlayer::PlayingState: ui->stop_play->setText("||"); break;
+    }
+}
 
 
 

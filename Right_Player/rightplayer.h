@@ -23,8 +23,10 @@ public:
 private slots:
 
     void songselected();
+    void playsong();
     void browsefile();
-
+    void curschange(QMediaContent media);
+    void statechange(int state);
 
 private:
     Ui::RightPlayer *ui;

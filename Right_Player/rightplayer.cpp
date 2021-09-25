@@ -169,6 +169,7 @@ void RightPlayer::on_saveplaylist_clicked()
 
     r_playlist->save(QUrl::fromLocalFile(pathplaylist),"m3u");
 }
+
 void RightPlayer::on_loadplaylist_clicked()
 {
     QString r_fileway = QFileDialog::getOpenFileName(this,"Open folder", QDir::homePath(),"TXT *.txt");

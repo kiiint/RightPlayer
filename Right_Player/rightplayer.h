@@ -7,6 +7,7 @@
 #include <QMediaPlaylist>
 #include <QFileDialog>
 #include <QDir>
+#include <QFile>
 #include <QTime>
 
 QT_BEGIN_NAMESPACE
@@ -37,6 +38,9 @@ private slots:
     void on_clearplaylist_clicked();
     void on_nextsong_clicked();
     void on_previous_clicked();
+    void on_saveplaylist_clicked();
+
+    void on_loadplaylist_clicked();
 
 private:
     Ui::RightPlayer *ui;

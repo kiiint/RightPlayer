@@ -9,7 +9,6 @@ RightPlayer::RightPlayer(QWidget *parent)
 
     r_player = new QMediaPlayer();
     r_playlist = new QMediaPlaylist();
-    r_playlist->setPlaybackMode(QMediaPlaylist :: Loop);
     r_player->setPlaylist(r_playlist);
 
     ui->volumesong->setRange(0, 100);
@@ -163,5 +162,37 @@ void RightPlayer::on_clearplaylist_clicked()
 
 }
 
+void RightPlayer::on_saveplaylist_clicked()
+{
+    QString pathplaylist = QFileDialog::getSaveFileName(this, "Save file", QDir::homePath(), "Text format (*.txt);;Another files (*)");
+
+
+    r_playlist->save(QUrl::fromLocalFile(pathplaylist),"m3u");
+}
+void RightPlayer::on_loadplaylist_clicked()
+{
+    QString r_fileway = QFileDialog::getOpenFileName(this,"Open folder", QDir::homePath(),"TXT *.txt");
+    if (r_fileway.isEmpty())
+        return;
+    QFile readFile(r_fileway);
+
+    if (readFile.open(QIODevice::ReadOnly)) {
+        QTextStream stream(&readFile);
+        while (!stream.atEnd()) {
+            QString s = stream.readLine();
+            QString d = (s.trimmed()).remove(0, s.trimmed().indexOf("/") + 3);
+            r_playlist->addMedia(QUrl::fromLocalFile(d));
+            QFileInfo fileInfo(d);
+            ui->playlisttable->addItem(fileInfo.fileName());
+        }
+        readFile.close();
+    }
+
+    if (r_player->state() != QMediaPlayer::PlayingState){
+        r_playlist->setCurrentIndex(0);
+    }
+    r_player->play();
+
+}
 
 
